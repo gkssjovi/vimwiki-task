@@ -1,0 +1,6 @@
+/target
+/config/template.sample.md
+/config/doc_template.sample.md
+/README_DEV.md
+/tests
+/Cargo.lock

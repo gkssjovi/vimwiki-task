@@ -1,0 +1,25 @@
+name: vimwiki-task
+version: "1.0"
+args:
+  - line-number:
+      short: l
+      long: line-number
+      value_name: NUMBER
+      help: Insert to the cursor line number. If no line number is provided, the task name will be appended at the bottom of the file.
+      takes_value: true
+  - override:
+      short: o
+      long: override
+      value_name: BOOLEAN
+      help: This is a boolean ["true", "false", "0", "1"]. It's for test, and will not create a new folder name. It will override it.
+      takes_value: true
+  - config:
+      short: c
+      long: config
+      value_name: STRING
+      help: Path of the "config.yaml" file. If path is not provided the default path is "~/.config/vimwiki-task/config.yaml".
+      takes_value: true
+  - TARGET:
+      help: File to insert the new task. Example "~/vimwiki/src/tasks/index.md"
+      required: false
+      index: 1

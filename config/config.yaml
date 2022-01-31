@@ -1,0 +1,5 @@
+date_format: '%a, %e %b %Y %T'
+task: 
+  title: 'Task {index} / {date_now} / {branch_name}'
+  template: ~/.config/vimwiki-task/template.md
+  doc_template: ~/.config/vimwiki-task/doc_template.md
