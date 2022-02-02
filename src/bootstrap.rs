@@ -25,7 +25,7 @@ impl<'a> Bootstrap<'a> {
         let dt = file_structure.get_date_time();
         let index = file_structure.get_index();
         let date_now = dt.format(&self.config.date_format).to_string();
-        let branch_name = String::from("ARC-000");
+        let branch_name = String::from(&self.config.branch_name);
 
         let title = Template::new(&self.config.task.title).render(HashMap::from([
             ("index", index.to_string()),

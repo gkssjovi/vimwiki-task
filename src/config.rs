@@ -12,6 +12,7 @@ pub struct  ConfigTask {
 }
 
 pub struct Config<'a> {
+    pub branch_name: String,
     pub date_format: String,
     pub task: ConfigTask,
     pub options: &'a Options<'a>,
@@ -26,6 +27,8 @@ impl<'a> Config<'a> {
             options,
             date_format: String::from(doc["date_format"].as_str()
                 .expect("Configuration field \"date_format\" was not found.")),
+            branch_name: String::from(doc["branch_name"].as_str()
+                .expect("Configuration field \"branch_name\" was not found.")),
             task: ConfigTask {
                 title: String::from(doc["task"]["title"].as_str()
                     .expect("Configuration field \"task -> title\" was not found.")),
