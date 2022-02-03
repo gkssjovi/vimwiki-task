@@ -1,7 +1,7 @@
 use std::path::Path;
 use chrono::{Local, DateTime};
 
-use crate::{options::Options, file_manager::FileManager};
+use crate::{options::Options, file_manager::FileManager, utils::get_filename};
 
 struct Info {
     dt: DateTime<Local>,
@@ -12,6 +12,8 @@ pub struct FileStructure {
     info: Info,
     pub target_dir: String,
     pub target_filename: String,
+    pub tasks_dir: String,
+    pub tasks_dir_name: String,
     pub root_dir: String,
     pub root_dir_name: String,
     pub assets_dir: String,
@@ -31,9 +33,11 @@ impl FileStructure {
         let target_dir = options.get_target_dir();
         let target_filename = options.get_target();
 
-        let root_dir = Self::get_next_root_dir(&options, &target_dir, &dt, &index);
-        let root_dir_name = String::from(Path::new(&root_dir).file_name().unwrap().to_str().unwrap());
+        let tasks_dir = format!("{}/tasks", target_dir);
+        let tasks_dir_name = get_filename(&tasks_dir);
 
+        let root_dir = Self::get_next_root_dir(&options, &tasks_dir, &dt, &index);
+        let root_dir_name = String::from(Path::new(&root_dir).file_name().unwrap().to_str().unwrap());
 
         let docs_dir = format!("{}/docs", root_dir);
         let docs_dir_name = String::from(Path::new(&docs_dir).file_name().unwrap().to_str().unwrap());
@@ -52,6 +56,8 @@ impl FileStructure {
             },
             target_dir,
             target_filename,
+            tasks_dir,
+            tasks_dir_name,
             root_dir,
             root_dir_name,
             assets_dir,
@@ -65,6 +71,7 @@ impl FileStructure {
     }
     
     pub fn create(&self) {
+        FileManager::mkdir(&self.tasks_dir, true);
         FileManager::mkdir(&self.root_dir, true);
         FileManager::mkdir(&self.assets_dir, true);
         FileManager::mkdir(&self.docs_dir, true);
@@ -79,8 +86,8 @@ impl FileStructure {
         self.info.index.clone()
     }
 
-    fn get_next_root_dir(options: &Options, target_dir: &str, dt: &DateTime<Local>, index: &str) -> String {
-        let mut root_dir = Self::get_root_dir_filename(target_dir, dt, index);
+    fn get_next_root_dir(options: &Options, tasks_dir: &str, dt: &DateTime<Local>, index: &str) -> String {
+        let mut root_dir = Self::get_root_dir_filename(tasks_dir, dt, index);
         
         if options.get_override() {
             return root_dir;
@@ -91,14 +98,14 @@ impl FileStructure {
             .unwrap();
 
         while Path::new(&root_dir).exists() {
-            root_dir = Self::get_root_dir_filename(&target_dir, &dt, &index_number.to_string());
+            root_dir = Self::get_root_dir_filename(tasks_dir, dt, &index_number.to_string());
             index_number = index_number + 1;
         }
 
         root_dir
     }
     
-    fn get_root_dir_filename(target_dir: &str, dt: &DateTime<Local>, index: &str) -> String {
-        return format!("{}/{}_{}", target_dir, dt.format("%Y_%m_%d").to_string(), index);
+    fn get_root_dir_filename(tasks_dir: &str, dt: &DateTime<Local>, index: &str) -> String {
+        return format!("{}/{}_{}", tasks_dir, dt.format("%Y_%m_%d").to_string(), index);
     }
 }

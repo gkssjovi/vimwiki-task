@@ -44,7 +44,7 @@ impl<'a> Bootstrap<'a> {
             assets_dir_name: file_structure.assets_dir_name,
         };
         
-        let title_line = self.get_title(&title, &file_structure.root_dir_name); 
+        let title_line = self.get_title(&title, &file_structure.tasks_dir_name, &file_structure.root_dir_name); 
         
         self.inser_title_line(&title_line);
 
@@ -77,8 +77,9 @@ impl<'a> Bootstrap<'a> {
         Template::new(&FileManager::new(&self.config.task.template).read()).render(self.get_variables(&vars))
     }
     
-    fn get_title(&self, title: &str, root_dir_name: &str) -> String {
-        let title_line = format!("[{}](./{}/index.md)\n",title, root_dir_name);
+    fn get_title(&self, title: &str, tasks_dir_name: &str, root_dir_name: &str) -> String {
+        let title_line = format!("[{}](./{}/{}/index.md)\n",title, tasks_dir_name, root_dir_name);
+        println!("{:?}", title_line);
         title_line
     }
     

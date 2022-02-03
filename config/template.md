@@ -1,4 +1,4 @@
-[Back](../{target_name})
+[Back](../../{target_name})
 
 [Documentation](./{docs_dir_name}/index.md)
 

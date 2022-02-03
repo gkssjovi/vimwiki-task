@@ -17,3 +17,7 @@ pub fn absolute_path<P: AsRef<Path>>(path_user_input: P) -> Option<PathBuf> {
         }
     })
 }
+
+pub fn get_filename(path: &str) -> String {
+    return String::from(Path::new(path).file_name().unwrap().to_str().unwrap());
+}
