@@ -28,7 +28,6 @@ pub struct FileStructure {
 impl FileStructure {
     pub fn new(options: &Options) -> Self {
         let dt = Local::now();
-        let index = String::from("1");
 
         let target_dir = options.get_target_dir();
         let target_filename = options.get_target();
@@ -36,8 +35,10 @@ impl FileStructure {
         let tasks_dir = format!("{}/tasks", target_dir);
         let tasks_dir_name = get_filename(&tasks_dir);
 
-        let root_dir = Self::get_next_root_dir(&options, &tasks_dir, &dt, &index);
+        let response = Self::get_next_root_dir(&options, &tasks_dir, &dt, 1);
+        let root_dir = response.0;
         let root_dir_name = String::from(Path::new(&root_dir).file_name().unwrap().to_str().unwrap());
+        let index = response.1;
 
         let docs_dir = format!("{}/docs", root_dir);
         let docs_dir_name = String::from(Path::new(&docs_dir).file_name().unwrap().to_str().unwrap());
@@ -52,7 +53,7 @@ impl FileStructure {
         Self {
             info: Info { 
                 dt,
-                index,
+                index: index.to_string(),
             },
             target_dir,
             target_filename,
@@ -86,26 +87,21 @@ impl FileStructure {
         self.info.index.clone()
     }
 
-    fn get_next_root_dir(options: &Options, tasks_dir: &str, dt: &DateTime<Local>, index: &str) -> String {
+    fn get_next_root_dir(options: &Options, tasks_dir: &str, dt: &DateTime<Local>, mut index: u32) -> (String, u32) {
         let mut root_dir = Self::get_root_dir_filename(tasks_dir, dt, index);
         
         if options.get_override() {
-            return root_dir;
+            return ( root_dir, index );
         }
-
-        let mut index_number = index
-            .parse::<u32>()
-            .unwrap();
 
         while Path::new(&root_dir).exists() {
-            root_dir = Self::get_root_dir_filename(tasks_dir, dt, &index_number.to_string());
-            index_number = index_number + 1;
+            root_dir = Self::get_root_dir_filename(tasks_dir, dt, index);
+            index = index + 1;
         }
-
-        root_dir
+        ( root_dir, index )
     }
     
-    fn get_root_dir_filename(tasks_dir: &str, dt: &DateTime<Local>, index: &str) -> String {
-        return format!("{}/{}_{}", tasks_dir, dt.format("%Y_%m_%d").to_string(), index);
+    fn get_root_dir_filename(tasks_dir: &str, dt: &DateTime<Local>, index: u32) -> String {
+        return format!("{}/{}_{}", tasks_dir, dt.format("%Y_%m_%d").to_string(), index.to_string());
     }
 }

@@ -79,7 +79,6 @@ impl<'a> Bootstrap<'a> {
     
     fn get_title(&self, title: &str, tasks_dir_name: &str, root_dir_name: &str) -> String {
         let title_line = format!("[{}](./{}/{}/index.md)\n",title, tasks_dir_name, root_dir_name);
-        println!("{:?}", title_line);
         title_line
     }
     
